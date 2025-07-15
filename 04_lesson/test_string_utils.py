@@ -1,53 +1,53 @@
-import unittest
+import pytest
 from string_utils import StringUtils
 
 
-class TestStringUtils(unittest.TestCase):
-    def setUp(self):
-        self.utils = StringUtils()
-
-    def test_capitalize(self):
-        # Позитивные тесты
-        self.assertEqual(self.utils.capitalize("skypro"), "Skypro")
-        self.assertEqual(self.utils.capitalize("тест"), "Тест")
-
-        # Негативные тесты
-        self.assertEqual(self.utils.capitalize(""), "")
-        self.assertEqual(self.utils.capitalize(" "), " ")
-        self.assertEqual(self.utils.capitalize(None), None)
-
-    def test_trim(self):
-        # Позитивные тесты
-        self.assertEqual(self.utils.trim("   skypro"), "skypro")
-        self.assertEqual(self.utils.trim("   тест   "), "тест   ")
-
-        # Негативные тесты
-        self.assertEqual(self.utils.trim(""), "")
-        self.assertEqual(self.utils.trim(" "), " ")
-        self.assertEqual(self.utils.trim(None), None)
-
-    def test_contains(self):
-        # Позитивные тесты
-        self.assertTrue(self.utils.contains("SkyPro", "S"))
-        self.assertTrue(self.utils.contains("Тест", "т"))
-
-        # Негативные тесты
-        self.assertFalse(self.utils.contains("SkyPro", "U"))
-        self.assertFalse(self.utils.contains("", "S"))
-        self.assertFalse(self.utils.contains(" ", "S"))
-        self.assertFalse(self.utils.contains(None, "S"))
-
-    def test_delete_symbol(self):
-        # Позитивные тесты
-        self.assertEqual(self.utils.delete_symbol("SkyPro", "k"), "SyPro")
-        self.assertEqual(self.utils.delete_symbol("SkyPro", "Pro"), "Sky")
-
-        # Негативные тесты
-        self.assertEqual(self.utils.delete_symbol("", "k"), "")
-        self.assertEqual(self.utils.delete_symbol(" ", "k"), " ")
-        self.assertEqual(self.utils.delete_symbol(None, "k"), None)
-        self.assertEqual(self.utils.delete_symbol("SkyPro", ""), "SkyPro")
+@pytest.fixture
+def string_utils():
+    return StringUtils()
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_capitalize(string_utils):
+    # Позитивные тесты
+    assert string_utils.capitalize("skypro") == "Skypro"
+    assert string_utils.capitalize("тест") == "Тест"
+
+    # Негативные тесты
+    assert string_utils.capitalize("") == ""
+    assert string_utils.capitalize(" ") == " "
+    assert string_utils.capitalize(None) is None
+
+
+def test_trim(string_utils):
+    # Позитивные тесты
+    assert string_utils.trim("   skypro") == "skypro"
+    assert string_utils.trim("   тест   ") == "тест   "
+
+    # Негативные тесты
+    assert string_utils.trim("") == ""
+    assert string_utils.trim(" ") == " "
+    assert string_utils.trim(None) is None
+
+
+def test_contains(string_utils):
+    # Позитивные тесты
+    assert string_utils.contains("SkyPro", "S") is True
+    assert string_utils.contains("Тест", "т") is True
+
+    # Негативные тесты
+    assert string_utils.contains("SkyPro", "U") is False
+    assert string_utils.contains("", "S") is False
+    assert string_utils.contains(" ", "S") is False
+    assert string_utils.contains(None, "S") is False
+
+
+def test_delete_symbol(string_utils):
+    # Позитивные тесты
+    assert string_utils.delete_symbol("SkyPro", "k") == "SyPro"
+    assert string_utils.delete_symbol("SkyPro", "Pro") == "Sky"
+
+    # Негативные тесты
+    assert string_utils.delete_symbol("", "k") == ""
+    assert string_utils.delete_symbol(" ", "k") == " "
+    assert string_utils.delete_symbol(None, "k") is None
+    assert string_utils.delete_symbol("SkyPro", "") == "SkyPro"
