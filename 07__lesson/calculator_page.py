@@ -8,7 +8,7 @@ class CalculatorPage:
         self.driver = driver
         # Локаторы
         self.DELAY_INPUT = (By.CSS_SELECTOR, '#delay')
-        self.DISPLAY = (By.ID, 'screen')
+        self.DISPLAY = (By.CSS_SELECTOR, '#calculator .screen')
 
     # Открыть заданную страницу
     def open(self, url: str):

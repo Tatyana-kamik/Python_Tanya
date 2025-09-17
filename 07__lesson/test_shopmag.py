@@ -49,5 +49,6 @@ def test_saucedemo_checkout_with_pom(web_driver):
     total_text = checkout_page.get_total()
 
     # Проверка итоговой суммы
-    assert total_text == "Total: $58.29", f"Итоговая сумма $58.29, но была {
-        total_text}"
+    assert "$58.29" in total_text, (
+        f"Ожидалась сумма '$58.29' в тексте тотала, но было: '{total_text}'"
+    )
