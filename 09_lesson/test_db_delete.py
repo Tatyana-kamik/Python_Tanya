@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import text
 
 db = "postgresql://postgres:123@localhost:5432/QA"
 
@@ -24,31 +25,28 @@ def session():
     session.close()
 
 
-def test_delete_teacher(session):
-    # Создаем тестового преподавателя с уникальным teacher_id
-    test_teacher_id = 88888
-    teacher = session.query(Teacher).filter_by(
-        teacher_id=test_teacher_id).first()
+def test_delete_teacher_with_sql(session):
+    test_id = 88888
 
-    if not teacher:
-        teacher = Teacher(
-            teacher_id=test_teacher_id,
-            email="test.teacher@example.com",
-            group_id=1
+    # 1. Добавляем запись через INSERT
+    insert_sql = text(
+        "INSERT INTO teacher(teacher_id,email,group_id) VALUES (:id,:email,:group_id)"
         )
-        session.add(teacher)
-        session.commit()
-
-    # Проверяем, что преподаватель есть в базе
-    teacher_from_db = session.query(Teacher).filter_by(
-        teacher_id=test_teacher_id).first()
-    assert teacher_from_db is not None
-
-    # Удаляем преподавателя
-    session.delete(teacher_from_db)
+    session.execute(
+        insert_sql, {
+            'id': test_id, 'email': 'test@example.com', 'group_id': 1})
     session.commit()
 
-    # Проверяем, что преподаватель удалён
-    deleted_teacher = session.query(Teacher).filter_by(
-        teacher_id=test_teacher_id).first()
-    assert deleted_teacher is None
+    # 2. Проверяем добавление через SELECT
+    select_sql = text("SELECT * FROM teacher WHERE teacher_id = :id")
+    result = session.execute(select_sql, {'id': test_id})
+    assert result.fetchone() is not None
+
+    # 3. Удаляем через DELETE
+    delete_sql = text("DELETE FROM teacher WHERE teacher_id = :id")
+    session.execute(delete_sql, {'id': test_id})
+    session.commit()
+
+    # 4. Проверяем удаление
+    result_after_delete = session.execute(select_sql, {'id': test_id})
+    assert result_after_delete.fetchone() is None
