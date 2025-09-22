@@ -30,7 +30,8 @@ def test_update_user_id(session):
             "WHERE NOT EXISTS (SELECT 1 FROM student WHERE user_id = :user_id)"
             ),
         {
-            'user_id': original_user_id, 'level': 'Bachelor', 'education_form': 'Full-time', 'subject_id': 1
+            'user_id': original_user_id, 'level': 'Bachelor', 'education_form': 'Full-time', 'subject_id':
+            1
             }
     )
     session.commit()
@@ -58,7 +59,7 @@ def test_update_user_id(session):
     assert updated_student is not None  # Проверяем, что запись существует
     assert updated_student.user_id == updated_user_id
 
-    #удаляем тестовые данные
+    # удаляем тестовые данные
     session.execute(
         text("DELETE FROM student WHERE user_id = :user_id"),
         {'user_id': updated_user_id}
